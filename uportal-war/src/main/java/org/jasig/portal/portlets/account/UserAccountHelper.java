@@ -161,7 +161,13 @@ public class UserAccountHelper {
         ILocalAccountPerson person = accountDao.getPerson(username);
         
         if (person == null) {
-            // Create him/her
+            /*
+             * NOTE:  We're probably here because an admin is editing attributes 
+             * on a user that is non-local in origin.  We need to create an 
+             * ILocalAccountPerson instance representing the user to support 
+             * this use case, but we're using the getForm() version, not the 
+             * getNewAccountForm(), because the username is already known.
+             */
             person = accountDao.createPerson(username);
         }
         
