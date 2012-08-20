@@ -160,6 +160,11 @@ public class UserAccountHelper {
         
         ILocalAccountPerson person = accountDao.getPerson(username);
         
+        if (person == null) {
+            // Create him/her
+            person = accountDao.createPerson(username);
+        }
+        
         PersonForm form = new PersonForm(accountEditAttributes);
         form.setUsername(person.getName());
         form.setId(person.getId());
@@ -209,7 +214,7 @@ public class UserAccountHelper {
     public boolean canEditUser(IPerson currentUser, String target) {
         
         // first check to see if this is a local user
-        if (!isLocalAccount(target)) {
+        if (false /* TODO: config */ && !isLocalAccount(target)) {
             return false;
         }
         
