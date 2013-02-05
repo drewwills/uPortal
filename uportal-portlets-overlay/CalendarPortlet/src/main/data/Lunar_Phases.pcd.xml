@@ -19,11 +19,11 @@
 
 -->
 <predefined-calendar script="classpath:/org/jasig/portlet/calendar/io/import-PredefinedCalendarDefinition_v1-0.crn.xml">
-  <fname>athletics</fname>
-  <className>urlTemplateHttpIcalAdapter</className>
-  <name>Athletics</name>
+  <fname>lunar-phases</fname>
+  <className>httpIcalAdapter</className>
+  <name>Phases of the Moon</name>
   <parameters>
-    <parameter name="url">http://events.rpi.edu/webcache/v1.0/icsRange/@STARTDATE@/@ENDDATE@/%28catuid%3D%2700f18254-27fe1f37-0127-fe1f3969-00000016%27%29.ics</parameter>
+    <parameter name="url">https://www.google.com/calendar/ical/ht3jlfaac5lfd6263ulfh4tql8%40group.calendar.google.com/public/basic.ics</parameter>
   </parameters>
   <predefinedRoles>
     <role>Everyone</role>

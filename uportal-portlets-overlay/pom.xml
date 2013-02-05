@@ -62,4 +62,32 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>portlet-data-import</id>
+            <activation>
+                <property>
+                    <name>portlet-data-import</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- 
+                     | Invoke this plugin as follows to drop and recreate the Calendar database tables...
+                     |
+                     |   >mvn hibernate3:hbm2ddl
+                     +-->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>hibernate3-maven-plugin</artifactId>
+                        <version>2.2</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
