@@ -31,7 +31,9 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.dom4j.DocumentHelper;
 import org.dom4j.QName;
@@ -92,6 +94,7 @@ public class PersonAttributesGroupTestDefinitionImpl implements IPersonAttribute
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity=PersonAttributesGroupTestGroupDefinitionImpl.class)
     @JoinColumn(name = "PAGS_TEST_GROUP_ID", nullable = false)
+    @JsonIgnore
     private IPersonAttributesGroupTestGroupDefinition testGroup;
 
     @Override
@@ -162,7 +165,9 @@ public class PersonAttributesGroupTestDefinitionImpl implements IPersonAttribute
         }
 
         org.dom4j.Element elementTest = DocumentHelper.createElement(new QName("test"));
-        elementTest.addElement("attribute-name").addText(this.getAttributeName());
+        if (StringUtils.isNotBlank(this.getAttributeName())) {
+            elementTest.addElement("attribute-name").addText(this.getAttributeName());
+        }
         elementTest.addElement("tester-class").addText(this.getTesterClassName());
         elementTest.addElement("test-value").addText(this.getTestValue());
         parent.add(elementTest);
