@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.ContextSource;
 
 import javax.annotation.PostConstruct;
@@ -94,9 +95,14 @@ public final class SmartLdapGroupStore implements IEntityGroupStore {
     }
 
     private AttributesMapper attributesMapper;
-    @Required
+    private ContextMapper contextMapper;
+
     public void setAttributesMapper(AttributesMapper attributesMapper) {
         this.attributesMapper = attributesMapper;
+    }
+
+    public void setContextMapper(ContextMapper contextMapper) {
+        this.contextMapper = contextMapper;
     }
 
     /**
@@ -590,7 +596,18 @@ public final class SmartLdapGroupStore implements IEntityGroupStore {
         req.setAttribute("resolveMemberGroups", resolveMemberGroups);
         req.setAttribute("resolveDnList", resolveDnList);
         req.setAttribute("memberOfAttributeName", memberOfAttributeName);
-        req.setAttribute("attributesMapper", attributesMapper);
+
+        // We need either an AttributesMapper or a ContextMapper;  the default is AttributesMapper.
+        if (attributesMapper != null) {
+            req.setAttribute("mapperType", "attributes");
+            req.setAttribute("attributesMapper", attributesMapper);
+        } else if (contextMapper != null) {
+            req.setAttribute("mapperType", "context");
+            req.setAttribute("contextMapper", contextMapper);
+        } else {
+            throw new IllegalStateException("Either an AttributesMapper or a ContextMapper must be specified");
+        }
+
         runner.run(initTask, req);
 
         log.info("init() found {} records", set.size());

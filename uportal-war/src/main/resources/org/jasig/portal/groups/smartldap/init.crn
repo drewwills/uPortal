@@ -18,21 +18,23 @@
     under the License.
 
 -->
-<ldap-search 
-        context-source="${ldapContext}" 
+<ldap-search
+        context-source="${ldapContext}"
         base-dn="${baseGroupDn}"
-        filter="${filter}" 
-        scope="${groovy(javax.naming.directory.SearchControls.SUBTREE_SCOPE)}" 
-        attributes-mapper="${attributesMapper}" 
+        filter="${filter}"
+        scope="${groovy(javax.naming.directory.SearchControls.SUBTREE_SCOPE)}"
+        mapper-type="${mapperType}"
+        attributes-mapper="${attributesMapper}"
+        context-mapper="${contextMapper}"
         attribute-name="record"
 	>
     <groovy>
         <script>
             import org.jasig.portal.groups.smartldap.LdapRecord;
-            
+
             def req = ScriptAttributes.REQUEST;
-        
-            // First we do a little post-processing to detect and remove 
+
+            // First we do a little post-processing to detect and remove
             // circular references.  These may be permitted by the LDAP server, 
             // but they are EXTREMELY TOXIC to GaP.
             def chain = req.hasAttribute('groupChain') ? req.getAttribute('groupChain') : [];
@@ -42,8 +44,8 @@
             newChain.addAll(chain);
             newChain.push(record.getGroup().getLocalKey());
             ScriptAttributes.RESPONSE.setAttribute('groupChain', newChain);
-            
-            // Next transform 'resolveDn' into 'resolveDnList' if the first is 
+
+            // Next transform 'resolveDn' into 'resolveDnList' if the first is
             // present but not the later.  'resolveDn' came before 'resolveDnList,' 
             // and older configs might still be using it;  this code should only 
             // trigger on the first pass.
@@ -52,8 +54,8 @@
                 resolveDnList.add(resolveDn);
                 ScriptAttributes.RESPONSE.setAttribute('resolveDnList', resolveDnList);
             }
-        
-            // Finally attempt to add this one to the collection of records.  The 
+
+            // Finally attempt to add this one to the collection of records.  The
             // 'isNew' flag indicates whether we have seen this group before;  
             // if we have, there's no need to follow its tree of decendents. 
             boolean isNew = GROUPS.add(record);
